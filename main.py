@@ -1,6 +1,8 @@
 import MySQLdb
+import logging
 from shelf import populate
 
+logging.basicConfig(filename='lib.log', filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
 conn = MySQLdb.connect(host='localhost', database='library', user='root', password='krish@12345')
 cursor = conn.cursor()
 
@@ -44,6 +46,7 @@ class User():
             cursor.execute(str % (book_list[inp - 1][0], self.username))
             cursor.execute("update book set status='BU' where name='%s'" % book_list[inp - 1])
             conn.commit()
+            logging.info("{} issued from library".format((book_list[inp - 1][0])))
             print('Book issued successfully!!')
             print('Database Updated!')
 
@@ -66,6 +69,7 @@ class User():
                     cursor.execute(str % (None, self.username))
                     cursor.execute("update book set status='AV' where name='%s'" % val[0])
                     conn.commit()
+                    logging.info("{} returned to the library".format(val[0]))
                     print('Book Returned!!!')
                     print('Database Successfully Updated!!!')
                 except:
@@ -221,7 +225,7 @@ if inp == '1':
         user = User(user_name, user_pwd)
 
         print("\n*****CHOSE ONE OF THE FOLLOWING*****")
-        print("1. BORROW BOOK")
+        print("1. ISSUE BOOK")
         print("2. RETURN BOOK")
         print("3. RESERVE BOOK")
         print("4. SHOW CATALOG")
